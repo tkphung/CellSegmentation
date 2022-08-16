@@ -33,3 +33,49 @@ BCBimage = imread(basalfile);
 
 % Segment Apical Cell Boundaries (function assumes 20x mag)
 basalbody = basalseg(BCBimage,pr,'visualize',true);
+
+
+%% Quanity & Visualize cell morphology
+% Calculate apical cell metrics
+    areas        = cell2mat(struct2cell(regionprops(apicalbody,'Area'))');
+    mals         = cell2mat(struct2cell(regionprops(apicalbody,'MajorAxisLength'))');
+    mils         = cell2mat(struct2cell(regionprops(apicalbody,'MinorAxisLength'))');
+    aspectratio  = mals./mils;
+
+% Map cell area
+    ACBlabel      = bwlabel(apicalbody);
+    [lia,locb]    = ismember(ACBlabel,1:numel(aspectratio));
+    ACBlabel(lia) = areas(locb(lia));
+    
+    figure('WindowStyle','docked','NumberTitle','off','name',...
+           'Apical Area')
+    axt = axes('Units', 'normalized', 'Position', [0 0 1 1]);
+    imshow(imadjust(ACBimage),[])
+    hold on
+    axtoo = axes('Units', 'normalized', 'Position', [0 0 1 1]);
+    imagesc(ACBlabel,'AlphaData',imerode(apicalbody,1))
+    colormap(axtoo,'spring')
+    cb=colorbar;
+    cb.Position = cb.Position + 1e-10;
+    caxis([500 2000])
+    axis equal tight off
+    linkaxes([axt axtoo])
+
+% Map cell aspect ratio
+    ACBlabel      = bwlabel(apicalbody);
+    [lia,locb]    = ismember(ACBlabel,1:numel(aspectratio));
+    ACBlabel(lia) = aspectratio(locb(lia));
+    
+    figure('WindowStyle','docked','NumberTitle','off','name',...
+           'Apical Aspect Ratio')
+    axt = axes('Units', 'normalized', 'Position', [0 0 1 1]);
+    imshow(imadjust(ACBimage),[])
+    hold on
+    axtoo = axes('Units', 'normalized', 'Position', [0 0 1 1]);
+    imagesc(ACBlabel,'AlphaData',imerode(apicalbody,1))
+    colormap(axtoo,'winter')
+    cb=colorbar;
+    cb.Position = cb.Position + 1e-10;
+    caxis([1.5 3.0])
+    axis equal tight off
+    linkaxes([axt axtoo])

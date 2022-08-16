@@ -42,7 +42,7 @@ Library of segmentation functions
 
 ### Executing program
 
-The script `Shell_segment_cells.m` includes blocks of code using the segmentation and visualization functions.
+The script `Shell_segment_cells.m` includes blocks of code using the segmentation functions and visualizing results.
 
 ## Authors
 
